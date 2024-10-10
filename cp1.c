@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define BUFFSIZE 4096
-#define COPYMODE 0644
+#define COPYMODE 0644  //设定复制后文件的执行权限
 
 void oops(char *, char *);
 
@@ -24,7 +24,7 @@ int main(int ac, char *av[])
         oops("Can't open", av[1]);
 
     // 创建目标文件，使用 open 而非 creat，便于扩展
-    if ((out_fd = open(av[2], O_WRONLY | O_CREAT | O_TRUNC, COPYMODE)) == -1)
+     if ((out_fd = open(av[2], O_WRONLY | O_CREAT | O_TRUNC, COPYMODE)) == -1)
         oops("Can't create", av[2]);
 
     // 读取源文件并写入目标文件
