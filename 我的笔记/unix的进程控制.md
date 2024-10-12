@@ -5,32 +5,59 @@
 - [代码解读](#代码解读)
 ### 常用函数
 - execvp()
+
 `int execvp(const char *file, char *const argv[]);`
+
 清除当前的程序内存并进入指定的程序。
+
 __传入参数__：
+
 **_file_**:执行的程序名或程序路径，程序名则根据PATH环境查找执行程序。
+
 __*argv*__:执行程序参数，第一个为程序名。如："ls" "-l" "/home"
+
 __返回__：成功不返回，执行出错返回-1。
+
 - fork()
+  
 `pid_t fork(void);`
+
 在父进程下创建一个子进程，但是会先执行完父进程再进入子进程。所以需要适时使用wait()。
+
 __返回__：子进程的pid。
+
 - wait()
+  
 `pid_t wait(int *status);`
-![wait流程](https://github.com/TARScn/unix-linux-Programming-MyReadingNote/blob/71a521338a84c114b2ecae4ac8f5cd6ec7677124/readme_picture/wait.png)
+
+<img src="https://github.com/TARScn/unix-linux-Programming-MyReadingNote/blob/71a521338a84c114b2ecae4ac8f5cd6ec7677124/readme_picture/wait.png" alt="wait流程" width="50%" height="50%">
+
 当父进程调用 wait() 时，它会被阻塞，直到其一个子进程结束执行。wait() 会回收子进程的资源，并通过 status 参数传递子进程的退出状态给父进程。这样可以确保系统资源得到正确释放，防止僵尸进程的产生。
+
 __传入参数__：
+
 **_status_**:指向一个整数的指针，用于存储子进程的退出状态信息。可以为 NULL，表示不关心子进程的退出状态。
+
 __返回__：成功: 返回结束的子进程的进程ID(PID),失败: 返回 -1。
+
 - exit()
+  
 `void exit(int status);`
+
 exit()用于终止当前进程的执行并返回一个状态码给操作系统。
+
 __传入参数__：status: 一个整数值，表示程序的退出状态。通常：
+
 EXIT_SUCCESS（通常为 0）：表示程序成功完成。
+
 EXIT_FAILURE（通常为 1）：表示程序以失败状态终止。
+
 也可以使用其他自定义的整数值来表示不同的退出原因。
+
 ### 控制逻辑
-![控制逻辑](https://github.com/TARScn/unix-linux-Programming-MyReadingNote/blob/b4e3ade077b743002a863264ff763dbd7edff489/readme_picture/psh2.png)
+
+<img src="https://github.com/TARScn/unix-linux-Programming-MyReadingNote/blob/b4e3ade077b743002a863264ff763dbd7edff489/readme_picture/psh2.png" alt="控制逻辑" width="50%" height="50%">
+
 ### 代码解读
 ```
 #include <stdio.h>
@@ -121,12 +148,19 @@ char *makestring(char *buf)
 }
 ```
 __execute__
+
 创建子进程：调用 fork()。
+
 pid == -1：创建子进程失败，输出错误信息并退出程序。
+
 pid == 0：在子进程中执行命令。调用 execvp 以执行 arglist[0] 指定的命令，并传递参数列表 arglist。
+
 如果 execvp 失败，输出错误信息并退出子进程。
+
 pid > 0：在父进程中等待子进程结束。
+
 使用 wait 循环等待特定的子进程结束，获取其退出状态。
+
 输出子进程的退出状态。
 
 __运行结果__
