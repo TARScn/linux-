@@ -23,7 +23,7 @@ __返回__：成功不返回，执行出错返回-1。
   
 `pid_t fork(void);`
 
-在父进程下创建一个子进程，但是会先执行完父进程再进入子进程。所以需要适时使用wait()。
+在父进程下创建一个子进程，子进程为父进程的副本，子进程与父进程公共文件描述符等资源。
 
 __返回__：进程的pid。
 
@@ -36,6 +36,8 @@ __返回__：进程的pid。
 <img src="https://github.com/TARScn/unix-linux-Programming-MyReadingNote/blob/71a521338a84c114b2ecae4ac8f5cd6ec7677124/readme_picture/wait.png" alt="wait流程" width="50%" height="50%">
 
 当父进程调用 wait() 时，它会被阻塞，直到其一个子进程结束执行。wait() 会回收子进程的资源，并通过 status 参数传递子进程的退出状态给父进程。这样可以确保系统资源得到正确释放，防止僵尸进程的产生。
+
+子进程执行结束后，会继续在进程表中存在。只有当父进程使用wait()、waitpid()得到子进程结束信号后才能消除。
 
 __传入参数__：
 
